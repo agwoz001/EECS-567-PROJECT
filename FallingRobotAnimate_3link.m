@@ -97,29 +97,27 @@ function [sys,x0,str,ts,simStateCompliance] = FallingRobotAnimate_3link(t,x,u,fl
 %   $Revision: 1.18.2.5 $
 
 global hlen vlen roundx roundy a b i refvector size;
-green = [0 .8 .3];
-previewon = 1;
-    m0=210.2; %g
-    m1=120.2; %g
-    m2=m1;
-    l0=5.6; %cm
-    l2=5.44; %cm
+L0 = 5.60;      %cm
+L1 = 5.44;      %cm
+L2 = L1;        %cm
+M0 = 210.2;     %g
+M1 = 120.2;     %g
+M2 = M1;        %g
+I0 = 1499.7;    %g-cm^2
+I1 = 895.1;     %g-cm^2
+I2 = I1;        %g-cm^2
 if flag==0, % initialize the animation
     
-    h1=figure(1);	
+    h1=figure(1);
     fullscreen = get(0,'ScreenSize');
     hlen=fullscreen(3);
     vlen=fullscreen(4);
     set(h1,'Position',[0 -100 fullscreen(3) fullscreen(4)])
     set(h1,'paperposition',[.25 .25 10.5 8])
     
-    axis([-hlen/2 hlen/2 -vlen/2 vlen/2]);
+    axis([-hlen/20 hlen/20 -vlen/20 vlen/20]);
+ 
     axis off;
-%     a=vlen/10;
-%     b=vlen/10*0.617;
-%     thetaround=0:pi/2:2*pi;
-%     roundx=b*cos(thetaround);
-%     roundy=b*sin(thetaround);
     
     sys = [0 0 0 5 0 0 1]; %5 inputs
     x0  = [];
@@ -135,50 +133,58 @@ if flag==0, % initialize the animation
     end
 elseif flag ==2;
     clf;
-    axis([-hlen/2 hlen/2 -vlen/2 vlen/2]);	%set axis scaling to screen size 1:1
+    axis([-hlen/20 hlen/20 -vlen/20 vlen/20]);	%set axis scaling to screen size 1:1
     axis off;
     
     q1=u(3);
     q2=u(4);
     q0=u(5); %TODO: solve for q0
-
     
-    R01=rotz(q1);
-    R02=rotz(q2);
-    Rc0=rotz(q0);
-    T01=[R01 [-l0; 0; 0]; 0 0 0 1];
-    T02=[R02 [l0; 0; 0]; 0 0 0 1];
     
-    r0_00=[0 0 0]'; %in frame 0: vector from CM of link 0 to CM of link 0
-    r0_20=[ l0+l2*cos(q2);  l2*sin(q2); 0]; %in frame 0: vector from CM of link 0 to CM of link 2
-    r0_10=[-l0-l2*cos(q1); -l2*sin(q1); 0]; %in frame 0: vector from CM of link 0 to CM of link 1
+    % Rotation Matrices
+    Rc0=[cos(q0),-sin(q0),0;sin(q0),cos(q0),0;0,0,1];
+    R01=[cos(q1),-sin(q1),0;sin(q1),cos(q1),0;0,0,1];
+    R02=[cos(q2),-sin(q2),0;sin(q2),cos(q2),0;0,0,1];
     
-    r0_c0=(r0_00*m0+r0_10*m1+r0_20*m2)/(m0+m1+m2);%in frame 0: vector from CM of link 0 to CG of robot
+    % position Vectors (All in the c frame!!!)
+    % point "a" is at the joint between links 0 and 1, and "b" between
+    % links 0 and 2.
+    z=[0 0 1]';
+    r1a=Rc0 * R01 * [-L1, 0, 0].';
+    ra0=Rc0 * [-L0, 0, 0].';
+    r2b=Rc0 * R02 * [L2, 0, 0].';
+    rb0=Rc0 * [L0, 0, 0].';
+    r00 = [0,0,0].';
+    r10 = r1a+ra0;
+    r20 = r2b+rb0;
+    rc0 = (r00*M0 + r10*M1 + r20*M2)/(M0+M1+M2);
+    r0c=-rc0;
+    r1c=r10+r0c;
+    r2c=r20+r0c;
     
-    rc_c0=Rc0*r0_c0; %in CG frame: vector from CM of link 0 to CG of robot
-    Oc0=-1*rc_c0; %origin of frame 0 expressed in frame c
-    
-    Tc0=[Rc0 Oc0; 0 0 0 1];
+    T01=[R01 [-L0; 0; 0]; 0 0 0 1];
+    T02=[R02 [L0; 0; 0]; 0 0 0 1];
+    Tc0=[Rc0 rc0; 0 0 0 1];
     Tc1=Tc0*T01;
     Tc2=Tc0*T02;
-    
+  
     joint1=Tc1(1:3,4);
     joint2=Tc2(1:3,4);
     
-    center2=joint2+l2*Tc2(1:3,1);
-    center1=joint1-l2*Tc1(1:3,1);
-    
-    %plot(0,0,'x',Tc0(1,4),Tc0(2,4),'x',joint1(1),joint1(2),'o',joint2(1),joint2(2),'o')
+    center2=joint2+Tc2(1:3,1:3)*[L2 0 0]';
+    center1=joint1+Tc1(1:3,1:3)*[-L2 0 0]';
+sqrt((joint2(1)-center2(1))^2+(joint2(2)-center2(2))^2)
+%%%%% draw robot. Graph is expressed in frame c for now. Eventually need to
+%%%%% add y offset to everything as robot falls.
     line([joint1(1) joint2(1)],[joint1(2) joint2(2)])
     line([joint1(1) center1(1)],[joint1(2) center1(2)])
     line([joint2(1) center2(1)],[joint2(2) center2(2)])
-    xlim([-10 10])
-    ylim([-10 10])
-    
-    %grid on;
-    
+    jointsize=0.2;
+    rectangle('Position',[joint1(1)-jointsize/2,joint1(2)-jointsize/2,jointsize,jointsize])
+    rectangle('Position',[joint2(1)-jointsize/2,joint2(2)-jointsize/2,jointsize,jointsize])
+   % xlim([-10 10])
+   % ylim([-10 10])
     drawnow;
-    
     sys=[];
     
 end;

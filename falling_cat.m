@@ -48,7 +48,7 @@ r2c=r20+r0c;
 
 % Really long formula for the velocity (or differential change) in u0
 % as a function of u1 and u2. I hope it works!!!  8[
-u0=(-u2*((z.' * X(r2c) * X(z) * r2b-z.' * X(r2c) * ((X(z) * r2b)*M2)/(M2+M1+M0))*M2-(z.' * X(r1c) * ((X(z) * r2b)*M2)/(M2+M1+M0))*M1-(z.' * X(r0c) * ((X(z) * r2b)*M2)/(M2+M1+M0))*M0+I2)-u1*(-(z.' * X(r2c) * ((X(z) * r1a)*M1)/(M2+M1+M0))*M2+(z.' * X(r1c) * X(z) * r1a-z.' * X(r1c) * ((X(z) * r1a)*M1)/(M2+M1+M0))*M1-(z.' * X(r0c) * ((X(z) * r1a)*M1)/(M2+M1+M0))*M0+I1))/((-z.' * X(r2c) * ((X(z) * rb0+X(z) * r2b)*M2+(X(z) * ra0+X(z) * r1a)*M1)/(M2+M1+M0)+z.' * X(r2c) * X(z) * rb0+z.' * X(r2c) * X(z) * r2b)*M2+(-z.' * X(r1c) * ((X(z) * rb0+X(z) * r2b)*M2+(X(z) * ra0+X(z) * r1a)*M1)/(M2+M1+M0)+z.' * X(r1c) * X(z) * ra0+z.' * X(r1c) * X(z) * r1a)*M1-(z.' * X(r0c) * ((X(z) * rb0+X(z) * r2b)*M2+(X(z) * ra0+X(z) * r1a)*M1)/(M2+M1+M0))*M0+I2+I1+I0)
+u0=(-u2*((z.' * X(r2c) * X(z) * r2b-z.' * X(r2c) * ((X(z) * r2b)*M2)/(M2+M1+M0))*M2-(z.' * X(r1c) * ((X(z) * r2b)*M2)/(M2+M1+M0))*M1-(z.' * X(r0c) * ((X(z) * r2b)*M2)/(M2+M1+M0))*M0+I2)-u1*(-(z.' * X(r2c) * ((X(z) * r1a)*M1)/(M2+M1+M0))*M2+(z.' * X(r1c) * X(z) * r1a-z.' * X(r1c) * ((X(z) * r1a)*M1)/(M2+M1+M0))*M1-(z.' * X(r0c) * ((X(z) * r1a)*M1)/(M2+M1+M0))*M0+I1))/((-z.' * X(r2c) * ((X(z) * rb0+X(z) * r2b)*M2+(X(z) * ra0+X(z) * r1a)*M1)/(M2+M1+M0)+z.' * X(r2c) * X(z) * rb0+z.' * X(r2c) * X(z) * r2b)*M2+(-z.' * X(r1c) * ((X(z) * rb0+X(z) * r2b)*M2+(X(z) * ra0+X(z) * r1a)*M1)/(M2+M1+M0)+z.' * X(r1c) * X(z) * ra0+z.' * X(r1c) * X(z) * r1a)*M1-(z.' * X(r0c) * ((X(z) * rb0+X(z) * r2b)*M2+(X(z) * ra0+X(z) * r1a)*M1)/(M2+M1+M0))*M0+I2+I1+I0);
 
 
 end
