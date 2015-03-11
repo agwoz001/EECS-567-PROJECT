@@ -173,15 +173,21 @@ elseif flag ==2;
     
     center2=joint2+Tc2(1:3,1:3)*[L2 0 0]';
     center1=joint1+Tc1(1:3,1:3)*[-L2 0 0]';
+    end2=joint2+Tc2(1:3,1:3)*[2*L2 0 0]';
+    end1=joint1+Tc1(1:3,1:3)*[-2*L2 0 0]';    
+    
 sqrt((joint2(1)-center2(1))^2+(joint2(2)-center2(2))^2)
 %%%%% draw robot. Graph is expressed in frame c for now. Eventually need to
 %%%%% add y offset to everything as robot falls.
     line([joint1(1) joint2(1)],[joint1(2) joint2(2)])
-    line([joint1(1) center1(1)],[joint1(2) center1(2)])
-    line([joint2(1) center2(1)],[joint2(2) center2(2)])
+    line([joint1(1) end1(1)],[joint1(2) end1(2)])
+    line([joint2(1) end2(1)],[joint2(2) end2(2)])
     jointsize=0.2;
-    rectangle('Position',[joint1(1)-jointsize/2,joint1(2)-jointsize/2,jointsize,jointsize])
-    rectangle('Position',[joint2(1)-jointsize/2,joint2(2)-jointsize/2,jointsize,jointsize])
+    rectangle('Position',[joint1(1)-jointsize/2,joint1(2)-jointsize/2,jointsize,jointsize],'Curvature',[1 1])
+    rectangle('Position',[joint2(1)-jointsize/2,joint2(2)-jointsize/2,jointsize,jointsize],'Curvature',[1 1])
+    rectangle('Position',[center1(1)-jointsize/2,center1(2)-jointsize/2,jointsize,jointsize],'EdgeColor','r')
+    rectangle('Position',[center2(1)-jointsize/2,center2(2)-jointsize/2,jointsize,jointsize],'EdgeColor','r')
+    rectangle('Position',[rc0(1)-jointsize/2, rc0(2)-jointsize/2,jointsize,jointsize],'EdgeColor','r')
    % xlim([-10 10])
    % ylim([-10 10])
     drawnow;
