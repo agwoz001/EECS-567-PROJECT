@@ -12,7 +12,7 @@ function u0 = falling_cat(q0,q1,q2,u1,u2)
 % frame 3 - frame that collides with ground
 
  
-InitParams;
+PhysicalParameters;
 
 
 % Rotation Matrices

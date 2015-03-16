@@ -97,7 +97,7 @@ function [sys,x0,str,ts,simStateCompliance] = FallingRobotAnimate_3link(t,x,u,fl
 %   $Revision: 1.18.2.5 $
 
 global hlen vlen roundx roundy a b i refvector size;
-InitParams;
+PhysicalParameters;
 % L0 = 5.60;      %cm
 % L1 = 5.44;      %cm
 % L2 = L1;        %cm
