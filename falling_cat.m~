@@ -12,8 +12,17 @@ function u0 = falling_cat(q0,q1,q2,u1,u2)
 % frame 3 - frame that collides with ground
 
  
-InitParams;
 
+% from table 1
+L0 = 5.60;      %cm
+L1 = 5.44;      %cm
+L2 = L1;        %cm
+M0 = 210.2;     %g
+M1 = 120.2;     %g
+M2 = M1;        %g
+I0 = 1499.7;    %g-cm^2
+I1 = 895.1;     %g-cm^2
+I2 = I1;        %g-cm^2
 
 % Rotation Matrices
 Rc0=[cos(q0),-sin(q0),0;sin(q0),cos(q0),0;0,0,1];
