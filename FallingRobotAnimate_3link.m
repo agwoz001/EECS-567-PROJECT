@@ -98,15 +98,7 @@ function [sys,x0,str,ts,simStateCompliance] = FallingRobotAnimate_3link(t,x,u,fl
 
 global hlen vlen roundx roundy a b i refvector size;
 PhysicalParameters;
-% L0 = 5.60;      %cm
-% L1 = 5.44;      %cm
-% L2 = L1;        %cm
-% M0 = 210.2;     %g
-% M1 = 120.2;     %g
-% M2 = M1;        %g
-% I0 = 1499.7;    %g-cm^2
-% I1 = 895.1;     %g-cm^2
-% I2 = I1;        %g-cm^2
+
 if flag==0, % initialize the animation
     
     h1=figure(1);
@@ -165,17 +157,23 @@ elseif flag ==2;
     
     T01=[R01 [-L0; 0; 0]; 0 0 0 1];
     T02=[R02 [L0; 0; 0]; 0 0 0 1];
-    Tc0=[Rc0 rc0; 0 0 0 1];
+    Tc0=[Rc0 r0c; 0 0 0 1];%changed from rc0
     Tc1=Tc0*T01;
     Tc2=Tc0*T02;
   
-    joint1=Tc1(1:3,4);
-    joint2=Tc2(1:3,4);
-    
-    center2=joint2+Tc2(1:3,1:3)*[L2 0 0]';
-    center1=joint1+Tc1(1:3,1:3)*[-L2 0 0]';
-    end2=joint2+Tc2(1:3,1:3)*[2*L2 0 0]';
-    end1=joint1+Tc1(1:3,1:3)*[-2*L2 0 0]';    
+    center0=r0c;
+    joint1=center0-Rc0*[L0; 0; 0];
+    joint2=center0+Rc0*[L0; 0; 0];
+    center1=joint1-Rc0*R01*[L1; 0 ;0];
+    center2=joint2+Rc0*R02*[L2; 0 ;0];
+    end1=joint1-Rc0*R01*[2*L1; 0 ;0];
+    end2=joint2+Rc0*R02*[2*L2; 0 ;0];
+%     joint1=Tc1(1:3,4);
+%     joint2=Tc2(1:3,4);
+%     center2=joint2+Tc2(1:3,1:3)*[L2 0 0]';
+%     center1=joint1+Tc1(1:3,1:3)*[-L1 0 0]';
+%     end2=joint2+Tc2(1:3,1:3)*[2*L2 0 0]';
+%     end1=joint1+Tc1(1:3,1:3)*[-2*L1 0 0]';    
     
 sqrt((joint2(1)-center2(1))^2+(joint2(2)-center2(2))^2)
 %%%%% draw robot. Graph is expressed in frame c for now. Eventually need to
@@ -188,7 +186,8 @@ sqrt((joint2(1)-center2(1))^2+(joint2(2)-center2(2))^2)
     rectangle('Position',[joint2(1)-jointsize/2,joint2(2)-jointsize/2,jointsize,jointsize],'Curvature',[1 1])
     rectangle('Position',[center1(1)-jointsize/2,center1(2)-jointsize/2,jointsize,jointsize],'EdgeColor','r')
     rectangle('Position',[center2(1)-jointsize/2,center2(2)-jointsize/2,jointsize,jointsize],'EdgeColor','r')
-    rectangle('Position',[rc0(1)-jointsize/2, rc0(2)-jointsize/2,jointsize,jointsize],'EdgeColor','r')
+    rectangle('Position',[center0(1)-jointsize/2, center0(2)-jointsize/2,jointsize,jointsize],'EdgeColor','r')
+    rectangle('Position',[-2*jointsize/2,-2*jointsize/2,2*jointsize,2*jointsize],'EdgeColor','g')
    % xlim([-10 10])
    % ylim([-10 10])
     drawnow;
