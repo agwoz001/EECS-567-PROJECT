@@ -13,13 +13,14 @@ close all;
 % I1 = 895.1;     %g-cm^2
 % I2 = I1;        %g-cm^2
 PhysicalParameters
+load qvecs
   
 bgain=76;   
 %system parameters
     
 
     
-    tend=10.0;
+    tend=q0_signal(end,1);%10.0;
     ts=1.0*10^(-4);
     tsc=1.0/1000.0;
     tslow=1.0/50.0;
@@ -35,6 +36,6 @@ phi9=0;
 phi10=0;
 phi11=0;
 
-load qvecs
+
 
     

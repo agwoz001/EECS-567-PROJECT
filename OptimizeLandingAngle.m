@@ -7,3 +7,5 @@ for i=1:length(FinalBodyAngle
     c=R*[2*L1+L0 0 0]; %TODO - check: vector to CM of rigid body 
     x=R*u+c; %global position of point on rigid body
 end
+
+
