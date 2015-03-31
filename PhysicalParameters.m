@@ -7,3 +7,8 @@ M2 = M1;        %g
 I0 = 1499.7;    %g-cm^2
 I1 = 895.1;     %g-cm^2
 I2 = I1;        %g-cm^2
+
+%only used for 4-link robot
+L3=L1;
+M3=M1;
+I3=I1;
