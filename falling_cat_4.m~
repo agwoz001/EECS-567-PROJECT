@@ -1,5 +1,5 @@
 %returns rate of change of q0 as a function of the configuration and the rate of change of q1 and q2
-function u0 = falling_cat_4(q0,q1,q2,q3,u1,u2,u3)
+function u0 = falling_cat(q0,q1,q2,q3,u1,u2,u3)
 
 
 
