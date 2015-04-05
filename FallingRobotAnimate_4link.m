@@ -112,7 +112,7 @@ if flag==0, % initialize the animation
  
     axis off;
     
-    sys = [0 0 0 5 0 0 1]; %5 inputs
+    sys = [0 0 0 6 0 0 1]; %6 inputs
     x0  = [];
     str = [];
     ts  = [tsdef, 0];
@@ -132,6 +132,7 @@ elseif flag ==2;
     q1=u(3);
     q2=u(4);
     q0=u(5); %TODO: solve for q0
+    q3=u(6)
     
     
     % Rotation Matrices

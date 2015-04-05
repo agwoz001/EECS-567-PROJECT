@@ -3,7 +3,7 @@
 % q0init    inital q0 position
 % q1        vector of q1 corresponding to time vector
 % q2        vector of q2 corresponding to time vector
-function q0traj = q0(t,q0init,q1,q2,q3)
+function q0traj = q0_4(t,q0init,q1,q2,q3)
 
 
 %input validation
