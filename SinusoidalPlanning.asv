@@ -9,6 +9,35 @@ q2_init = 0;
 q1_cycle = -pi/2;
 q2_cycle = pi/2 - k;                                                       
 
+%entiring q cycle
+% t1 = 0:0.05:3;
+% q1_1 = q1_init:(q1_cycle-q1_init)/(length(t1)-1):q1_cycle;
+% q2_1 = q2_init:(q2_cycle-q2_init)/(length(t1)-1):q2_cycle;
+% q0_1 = q0(t1, q0_init, q1_1, q2_1);
+
+%entering sinusoidal driving
+% t2 = 0:deltat:25;   
+% u1 = k*sin(t2);
+% u2 = -k*cos(t2);          
+
+%q1_2 = k*cos(t2);
+% q1_2 = -k*cos(t2)+q1_cycle+k;
+% q2_2 = -k*sin(t2)+q2_cycle;
+
+% q1_2 = -k*cos(10*t2)+q1_cycle+k;
+% q2_2 = -k*sin(10*t2)+q2_cycle;
+
+% q0_2=q0(t2,q0_1(end),q1_2,q2_2);
+% t2 = t2 + 3;
+% t = [t1,t2];
+% q1 = [q1_1, q1_2];
+% q2 = [q2_1, q2_2];
+% q0 = [q0_1, q0_2];
+
+
+
+%plot(t,q1,'r',t,q2,'b')
+
 %SINUSOIDAL PLANNING
 %robot falls from 490.5m height
 %total fall time = 10 seconds
@@ -29,7 +58,7 @@ q2_2 = -k*sin(omega*t)+q2_cycle;
 q0_2 = q0(t,q0_1(end),q1_2,q2_2);
 
 %desired phase = 75 (desired) - 45 (initial) = 30 degrees
-[M,I] = min(find((q0_2-(45*pi/180)>= 30*pi/180)));
+[M,I] = min(find((q0_2-(45*pi/18 >= 30*pi/180));
 q1_2 = q1_2(1:M); q2_2 = q2_2(1:M); q0_2 = q0_2(1:M);       %truncate paths
 
 %entering reverse q cycle for 1 second
