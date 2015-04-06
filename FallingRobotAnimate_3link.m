@@ -96,7 +96,7 @@ function [sys,x0,str,ts,simStateCompliance] = FallingRobotAnimate_3link(t,x,u,fl
 %   Copyright 1990-2010 The MathWorks, Inc.
 %   $Revision: 1.18.2.5 $
 
-global hlen vlen roundx roundy a b i refvector size;
+global hlen vlen roundx roundy a b i refvector size screenaxes;
 PhysicalParameters;
 
 if flag==0, % initialize the animation
@@ -105,17 +105,18 @@ if flag==0, % initialize the animation
     fullscreen = get(0,'ScreenSize');
     hlen=fullscreen(3);
     vlen=fullscreen(4);
-    set(h1,'Position',[0 -100 fullscreen(3) fullscreen(4)])
-    set(h1,'paperposition',[.25 .25 10.5 8])
-    
-    axis([-hlen/20 hlen/20 -vlen/20 vlen/20]);
+    set(h1,'Position',[0 -100 fullscreen(3) fullscreen(4)]);
+    set(h1,'paperposition',[.25 .25 10.5 8]);
+    screenaxes=[-hlen/20 hlen/20 0 vlen/20];
+    axis(screenaxes);
  
     axis off;
     
-    sys = [0 0 0 5 0 0 1]; %5 inputs
+    sys = [0 0 0 6 0 0 1]; %5 inputs
     x0  = [];
     str = [];
     ts  = [tsdef, 0];
+    
     % specify that the simState for this s-function is same as the default
     simStateCompliance = 'DefaultSimState';
     i=1;
@@ -124,15 +125,21 @@ if flag==0, % initialize the animation
         refvector(1,n)=10*n-10;
         size(n)=length(refvector)-n+1;
     end
+    
+    
 elseif flag ==2;
     clf;
-    axis([-hlen/20 hlen/20 -vlen/20 vlen/20]);	%set axis scaling to screen size 1:1
+    axis(screenaxes);	%set axis scaling to screen size square
     axis off;
     
     q1=u(3);
     q2=u(4);
     q0=u(5); %TODO: solve for q0
     
+    %calculate falling distance
+    tend= u(6);
+    maxh=0.5*9.81*tend^2;
+    h=[0 (maxh-0.5*9.81*t^2) 0]';
     
     % Rotation Matrices
     Rc0=[cos(q0),-sin(q0),0;sin(q0),cos(q0),0;0,0,1];
@@ -161,7 +168,7 @@ elseif flag ==2;
     Tc1=Tc0*T01;
     Tc2=Tc0*T02;
   
-    center0=r0c;
+    center0=r0c+h;
     joint1=center0-Rc0*[L0; 0; 0];
     joint2=center0+Rc0*[L0; 0; 0];
     center1=joint1-Rc0*R01*[L1; 0 ;0];
@@ -187,7 +194,7 @@ sqrt((joint2(1)-center2(1))^2+(joint2(2)-center2(2))^2)
     rectangle('Position',[center1(1)-jointsize/2,center1(2)-jointsize/2,jointsize,jointsize],'EdgeColor','r')
     rectangle('Position',[center2(1)-jointsize/2,center2(2)-jointsize/2,jointsize,jointsize],'EdgeColor','r')
     rectangle('Position',[center0(1)-jointsize/2, center0(2)-jointsize/2,jointsize,jointsize],'EdgeColor','r')
-    rectangle('Position',[-2*jointsize/2,-2*jointsize/2,2*jointsize,2*jointsize],'EdgeColor','g')
+    rectangle('Position',[center0(1)-2*jointsize/2,center0(2)-2*jointsize/2,2*jointsize,2*jointsize],'EdgeColor','g')
    % xlim([-10 10])
    % ylim([-10 10])
     drawnow;
