@@ -132,7 +132,7 @@ elseif flag ==2;
     q1=u(3);
     q2=u(4);
     q0=u(5); %TODO: solve for q0
-    q3=u(6)
+    q3=u(6);
     
     
     % Rotation Matrices
@@ -149,17 +149,17 @@ elseif flag ==2;
     ra0=Rc0 * [-L0, 0, 0].';
     r2b=Rc0 * R02 * [L2, 0, 0].';
     rb0=Rc0 * [L0, 0, 0].';
-    r3d=Rc0 * R03 * [L3, 0, 0].';
-    rd0=
-    r00 = [0,0,0].';
+    rd2=Rc0 * R02 * [L2, 0, 0].';
+    r3d=Rc0 * R02 * R23 * [L3, 0, 0].';
+    r00 = [0,0,0].'; 
     r10 = r1a+ra0;
     r20 = r2b+rb0;
-    r30 = 
-    rc0 = (r00*M0 + r10*M1 + r20*M2)/(M0+M1+M2);
+    r30 = r3d+rd2+r20;
+    rc0 = (r00*M0 + r10*M1 + r20*M2 + r30*M3)/(M0+M1+M2+M3);  
     r0c=-rc0;
     r1c=r10+r0c;
     r2c=r20+r0c;
-    r3c=
+    r3c=r30+r0c;
     
     T01=[R01 [-L0; 0; 0]; 0 0 0 1];
     T02=[R02 [L0; 0; 0]; 0 0 0 1];
