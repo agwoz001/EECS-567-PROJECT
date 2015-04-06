@@ -2,7 +2,7 @@ clear all;
 clc;
 close all;  
 
-PhysicalParameters
+PhysicalParameters_4
 load qvecs4;
   
 bgain=76;   

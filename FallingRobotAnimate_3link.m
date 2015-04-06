@@ -107,7 +107,7 @@ if flag==0, % initialize the animation
     vlen=fullscreen(4);
     set(h1,'Position',[0 -100 fullscreen(3) fullscreen(4)]);
     set(h1,'paperposition',[.25 .25 10.5 8]);
-    screenaxes=[-hlen/20 hlen/20 0 vlen/20];
+    screenaxes=[-hlen/20 hlen/20 -vlen/20 vlen/20];%[-hlen/20 hlen/20 0 vlen/20];
     axis(screenaxes);
  
     axis off;
@@ -168,7 +168,7 @@ elseif flag ==2;
     Tc1=Tc0*T01;
     Tc2=Tc0*T02;
   
-    center0=r0c+h;
+    center0=r0c;%+h;
     joint1=center0-Rc0*[L0; 0; 0];
     joint2=center0+Rc0*[L0; 0; 0];
     center1=joint1-Rc0*R01*[L1; 0 ;0];
