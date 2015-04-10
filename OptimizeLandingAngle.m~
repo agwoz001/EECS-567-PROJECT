@@ -10,7 +10,7 @@ PhysicalParameters;
 
 theta=linspace(10*pi/180,pi/2,100);
 n=0.5;
-vbefore=.8;
+vbefore=2;
 r1=L1;
 r2=r1+L1+L2;
 r3=r2+L2+L3;
