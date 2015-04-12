@@ -1,37 +1,37 @@
-close all;
-clear all;
-
-deltat = 0.1;
-phaseangle = pi/2;
-q1_cycle = -pi/2;
-q1_init = 0;
-q2_init = 0;
-q0_init = 45*pi/180;
-q0_end = 75*pi/180;
-
-k_test = linspace(0,pi/3,30);
-w_test = 1:10;
-phaseshift = zeros(size(k_test),10);
-
-figure(1)
-hold on
-for i = 1:length(k_test)
-    for w = 1:length(w_test)    
-        phaseshift(i,w) = SinusoidCyclePhaseChange(k_test(i),q0_init,w,phaseangle);        
-    end
-end
-
-%find where phase shift is approximately an integer
-quotient_map = (q0_end-q0_init)./phaseshift;             %find desired phase shift divided by phase of one cycle
-quotient_map(~isfinite(quotient_map)) = 0;               %remove infinities
-integer_map = mod(quotient_map, 1) < 0.1                 %find values that are approximately divide the phase by even cycles
-allowable_phases = integer_map .* phaseshift;
-
-max_phase = max(max(allowable_phases))
-[maxloc_row, maxloc_col] = find(allowable_phases == max(max(allowable_phases)))
-k = k_test(maxloc_row);
-omega = w_test(maxloc_col)
-num_cycles = (q0_end-q0_init)/max_phase
+% close all;
+% clear all;
+% 
+% deltat = 0.1;
+% phaseangle = pi/2;
+% q1_cycle = -pi/2;
+% q1_init = 0;
+% q2_init = 0;
+% q0_init = 45*pi/180;
+% q0_end = 75*pi/180;
+% 
+% k_test = linspace(0,pi/3,40);
+% w_test = 1:10;
+% phaseshift = zeros(size(k_test),10);
+% 
+% figure(1)
+% hold on
+% for i = 1:length(k_test)
+%     for w = 1:length(w_test)    
+%         phaseshift(i,w) = SinusoidCyclePhaseChange(k_test(i),q0_init,w,phaseangle);        
+%     end
+% end
+% 
+% %find where phase shift is approximately an integer
+% quotient_map = (q0_end-q0_init)./phaseshift;             %find desired phase shift divided by phase of one cycle
+% quotient_map(~isfinite(quotient_map)) = 0;               %remove infinities
+% integer_map = mod(quotient_map, 1) < 0.1                 %find values that are approximately divide the phase by even cycles
+% allowable_phases = integer_map .* phaseshift;
+% 
+% max_phase = max(max(allowable_phases))
+% [maxloc_row, maxloc_col] = find(allowable_phases == max(max(allowable_phases)))
+% k = k_test(maxloc_row);
+% omega = w_test(maxloc_col)
+% num_cycles = (q0_end-q0_init)/max_phase
 
 %plot(k_test,phaseshift*180/pi)
 %xlabel('k'); ylabel('phase shift (deg)');
@@ -55,13 +55,19 @@ q0_1 = q0(t1, q0_init, q1_1, q2_1);
 %entering sinusoidal cycle
 u1 = k*sin(t);                  %driving signal to inputs
 u2 = -k*cos(t);   
+%q1_2 = -k/omega*cos(omega*t)+q1_cycle+k/omega;
 q1_2 = -k/omega*cos(omega*t)+q1_cycle+k/omega;
 q2_2 = -k/omega*sin(omega*t)+q2_cycle;
 q0_2 = q0(t,q0_1(end),q1_2,q2_2);
+% 
+% q1_2 = q1_2(length(t1)+1:length(t1)+length(t2));
+% q2_2 = q2_2(length(t1)+1:length(t1)+length(t2));
+% q0_2 = q0_2(length(t1)+1:length(t1)+length(t2));
 
-q1_2 = q1_2(length(t1)+1:length(t1)+length(t2));
-q2_2 = q2_2(length(t1)+1:length(t1)+length(t2));
-q0_2 = q0_2(length(t1)+1:length(t1)+length(t2));
+q1_2 = q1_2(1:length(t2));
+q2_2 = q2_2(1:length(t2));
+q0_2 = q0_2(1:length(t2));
+
 
 %entering reverse q cycle for 1 second
 q1_3 = q1_2(end):(q1_init-q1_2(end))/(length(t3)-1):q1_init;
@@ -75,6 +81,7 @@ q2_final = [q2_1, q2_2, q2_3];
 
 figure(1)
 plot(t,q1_final*180/pi,'r',t,q2_final*180/pi,'b')
+grid on
 figure(2)
 plot(t,q0_final*180/pi,t, 75*ones(size(q0_final)),'r')
 grid on
