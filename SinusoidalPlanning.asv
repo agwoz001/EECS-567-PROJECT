@@ -1,82 +1,109 @@
 clear all;
-deltat = 0.05;
-k = 0.55;
-q0_init = 45*pi/180;
-q0_end = 75*pi/180;
+close all;
 
+%NEW
+t = 0:0.05:10;
+t1 = t(1:0.1*length(t));        %flex for 1st 10% of falling
+t2 = t(0.1*length(t)+1:length(t)-0.1*length(t));
+t3 = (length(t)-0.1*length(t)+1:length(t));
+omega = 1;
+phaseangle = pi/2;
+q1_cycle = -pi/2;
 q1_init = 0;
 q2_init = 0;
-q1_cycle = -pi/2;
-q2_cycle = pi/2 - k;                                                       
+q0_init = 45*pi/180;
 
-%entiring q cycle
-% t1 = 0:0.05:3;
-% q1_1 = q1_init:(q1_cycle-q1_init)/(length(t1)-1):q1_cycle;
-% q2_1 = q2_init:(q2_cycle-q2_init)/(length(t1)-1):q2_cycle;
-% q0_1 = q0(t1, q0_init, q1_1, q2_1);
+k_test = linspace(0,pi/4,20);
+phaseshift = zeros(size(k_test));
+figure(1)
+hold on
+for i = 1:length(k_test)
+%     %find inital data for each k
+%     q2_cycle = pi/2 - k_test(i); 
+%     %find q0_init
+%     q1_1 = q1_init:(q1_cycle-q1_init)/(19):q1_cycle;
+%     q2_1 = q2_init:(q2_cycle-q2_init)/(19):q2_cycle;
+%     q0_1 = q0(t1, q0_init, q1_1, q2_1);
+%     q0_init_test = q0_1(end);
+%     
+%     %find phase shift associated with given k
+%     %q1_test = -k_test(i)/omega*sin(omega*t+phaseangle)+q1_cycle+k_test(i);
+%     q1_test = -k_test(i)/omega*cos(omega*t)+q1_cycle+k_test(i);
+%     q2_test = -k_test(i)/omega*sin(omega*t)+q2_cycle;
+%     q0_test = q0(t,q0_init_test,q1_test,q2_test);
 
-%entering sinusoidal driving
-% t2 = 0:deltat:25;   
-% u1 = k*sin(t2);
-% u2 = -k*cos(t2);          
+    %phaseshift(i)=q0_test(end)-q0_init_test;
+    phaseshift(i) = SinusoidCyclePhaseChange(k_test(i),q0_init,omega,phaseangle);
+    
+    %check if k pushes q1,q2 beyond bounds
+    q1_max = max(abs(-k_test(i)/omega*sin(omega*t2+phaseangle)+q1_cycle+k_test(i)));
+    q2_max = max(abs(-k_test(i)/omega*sin(omega*t2)+q2_cycle));
+    if max(q1_max,q2_max) > pi/2
+       plot(k_test(i),phaseshift(i)*180/pi,'r*')  
+    end
+end
 
-%q1_2 = k*cos(t2);
-% q1_2 = -k*cos(t2)+q1_cycle+k;
-% q2_2 = -k*sin(t2)+q2_cycle;
+plot(k_test,phaseshift*180/pi)
+xlabel('k'); ylabel('phase shift (deg)');
+hold off
 
-% q1_2 = -k*cos(10*t2)+q1_cycle+k;
-% q2_2 = -k*sin(10*t2)+q2_cycle;
+%END NEW
 
-% q0_2=q0(t2,q0_1(end),q1_2,q2_2);
-% t2 = t2 + 3;
-% t = [t1,t2];
-% q1 = [q1_1, q1_2];
-% q2 = [q2_1, q2_2];
-% q0 = [q0_1, q0_2];
-
-
-
-%plot(t,q1,'r',t,q2,'b')
-
-%SINUSOIDAL PLANNING
-%robot falls from 490.5m height
-%total fall time = 10 seconds
-t = 0:0.05:10;
-height = 490.5;
-h_t = height - 0.5*9.81.*(t.^2);
-%entiring q cycle for 1 second
-q1_1 = q1_init:(q1_cycle-q1_init)/(19):q1_cycle;
-q2_1 = q2_init:(q2_cycle-q2_init)/(19):q2_cycle;
-q0_1 = q0(t(1:20), q0_init, q1_1, q2_1);
-
-%entering sinusoidal cycle
-omega = 4;                      %determines frequency of sinusoidal driving
-u1 = k*sin(t);                  %driving signal to inputs
-u2 = -k*cos(t);   
-q1_2 = -k*cos(omega*t)+q1_cycle+k;
-q2_2 = -k*sin(omega*t)+q2_cycle;
-q0_2 = q0(t,q0_1(end),q1_2,q2_2);
-
-%desired phase = 75 (desired) - 45 (initial) = 30 degrees
-[M,I] = min(find((q0_2-(45*pi/18 >= 30*pi/180));
-q1_2 = q1_2(1:M); q2_2 = q2_2(1:M); q0_2 = q0_2(1:M);       %truncate paths
-
-%entering reverse q cycle for 1 second
-q1_3 = q1_2(end):(q1_init-q1_2(end))/(19):q1_init;
-q2_3 = q2_2(end):(q2_init-q2_2(end))/(19):q2_init;
-q0_3 = q0(t(1:20), q0_2(end), q1_3, q2_3);
-
-%find time steps remaining and wait for collision
-q1_4 = q1_3(end)*ones(1,length(t)-length([q1_1,q1_2,q1_3]));
-q2_4 = q2_3(end)*ones(1,length(t)-length([q2_1,q2_2,q2_3]));
-q0_4 = q0_3(end)*ones(1,length(t)-length([q0_1,q0_2,q0_3]));
-
-q0_final = [q0_1, q0_2, q0_3, q0_4];
-q1_final = [q1_1, q1_2, q1_3, q1_4];
-q2_final = [q2_1, q2_2, q2_3, q2_4];
-
-q1_signal = [t; q1_final]';
-q2_signal = [t; q2_final]';
-q0_signal = [t; q0_final]';
-save qvecs q1_signal  q2_signal  q0_signal
+% deltat = 0.05;
+% k = 0.55;
+% q0_init = 45*pi/180;
+% q0_end = 75*pi/180;
+% 
+% q1_init = 0;
+% q2_init = 0;
+% q1_cycle = -pi/2;
+% q2_cycle = pi/2 - k;                                                       
+% 
+% %SINUSOIDAL PLANNING
+% %robot falls from 490.5m height
+% %total fall time = 10 seconds
+% t = 0:0.05:10;
+% height = 490.5;
+% h_t = height - 0.5*9.81.*(t.^2);
+% %entiring q cycle for 1 second
+% q1_1 = q1_init:(q1_cycle-q1_init)/(19):q1_cycle;
+% q2_1 = q2_init:(q2_cycle-q2_init)/(19):q2_cycle;
+% q0_1 = q0(t(1:20), q0_init, q1_1, q2_1);
+% 
+% %entering sinusoidal cycle
+% omega = 4;                      %determines frequency of sinusoidal driving
+% u1 = k*sin(t);                  %driving signal to inputs
+% u2 = -k*cos(t);   
+% q1_2 = -k*cos(omega*t)+q1_cycle+k;
+% q2_2 = -k*sin(omega*t)+q2_cycle;
+% q0_2 = q0(t,q0_1(end),q1_2,q2_2);
+% 
+% %desired phase = 75 (desired) - 45 (initial) = 30 degrees
+% [M,I] = min(find((q0_2-(45*pi/180)>= 30*pi/180)));
+% q1_2 = q1_2(1:M); q2_2 = q2_2(1:M); q0_2 = q0_2(1:M);       %truncate paths
+% 
+% %entering reverse q cycle for 1 second
+% q1_3 = q1_2(end):(q1_init-q1_2(end))/(19):q1_init;
+% q2_3 = q2_2(end):(q2_init-q2_2(end))/(19):q2_init;
+% q0_3 = q0(t(1:20), q0_2(end), q1_3, q2_3);
+% 
+% %find time steps remaining and wait for collision
+% q1_4 = q1_3(end)*ones(1,length(t)-length([q1_1,q1_2,q1_3]));
+% q2_4 = q2_3(end)*ones(1,length(t)-length([q2_1,q2_2,q2_3]));
+% q0_4 = q0_3(end)*ones(1,length(t)-length([q0_1,q0_2,q0_3]));
+% 
+% q0_final = [q0_1, q0_2, q0_3, q0_4];
+% q1_final = [q1_1, q1_2, q1_3, q1_4];
+% q2_final = [q2_1, q2_2, q2_3, q2_4];
+% 
+% figure(1)
+% plot(t,q1_final*180/pi,'r',t,q2_final*180/pi,'b')
+% figure(2)
+% plot(t,q0_final*180/pi,t, 75*ones(size(q0_final)),'r')
+% grid on
+% 
+% q1_signal = [t; q1_final]';
+% q2_signal = [t; q2_final]';
+% q0_signal = [t; q0_final]';
+% save qvecs q1_signal  q2_signal  q0_signal
 
