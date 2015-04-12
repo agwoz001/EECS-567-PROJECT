@@ -7,7 +7,7 @@ q0_init = 45*pi/180;
 %phaseangle=pi/2;
 
 k=linspace(0,pi/4,15);
-omega = linspace(0,10,10);
+omega = linspace(.1,1,4);
 phaseangle=linspace(0,pi,15);
 for j=1:length(omega)
     for i=1:length(k)
