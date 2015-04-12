@@ -80,10 +80,14 @@ q1_final = [q1_1, q1_2, q1_3];
 q2_final = [q2_1, q2_2, q2_3];
 
 figure(1)
-plot(t,q1_final*180/pi,'r',t,q2_final*180/pi,'b')
+plot(t,q1_final*180/pi,'r',t,q2_final*180/pi,'b',...
+    t, 90*ones(size(t)), 'k', t, -90*ones(size(t)),'k')
+legend('q1','q2')
+title('Path of Joint Angles');
 grid on
 figure(2)
 plot(t,q0_final*180/pi,t, 75*ones(size(q0_final)),'r')
+title('Path of Body Angle')
 grid on
 
 q1_signal = [t; q1_final]';
