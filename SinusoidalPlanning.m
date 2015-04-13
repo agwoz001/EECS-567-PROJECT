@@ -1,7 +1,7 @@
 close all;
 clear all;
 
-deltat = 0.05;
+deltat = 0.01;
 phaseangle = pi/2;
 q1_cycle = -pi/2;
 q1_init = 0;
@@ -11,19 +11,20 @@ q0_end = 75*pi/180;
 precision = 1.5;        %how close to an integer number of periods is acceptable (unitless)
 
 
-k_test = linspace(.00001,2*pi,50);%linspace(0,pi/3,50);
-w_test = 1:10;
+k_test = linspace(.00001,2.5,50);%linspace(0,pi/3,50);
+w_test = linspace(1,5,10);
 phaseshift = zeros(length(k_test),10);
 
 figure(1)
 hold on
 for i = 1:length(k_test)
     for w = 1:length(w_test)    
-        if (k_test(i)/w_test(w)>pi/2)
+        if ((k_test(i)/w_test(w))>(pi/4))
             phaseshift(i,w) = 0;
         else
             phaseshift(i,w) = SinusoidCyclePhaseChange(k_test(i),q0_init,w_test(w),phaseangle); 
         end
+        temp(i,w)=k_test(i)/w_test(w);
     end
 end
 
