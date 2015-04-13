@@ -8,8 +8,10 @@ q1_init = 0;
 q2_init = 0;
 q0_init = 45*pi/180;
 q0_end = 75*pi/180;
+precision = 1.5;        %how close to an integer number of periods is acceptable (unitless)
 
-k_test = linspace(0,pi/3,40);
+
+k_test = linspace(0,pi/3,50);
 w_test = 1:10;
 phaseshift = zeros(size(k_test),10);
 
@@ -24,7 +26,7 @@ end
 %find where phase shift is approximately an integer
 quotient_map = (q0_end-q0_init)./phaseshift;             %find desired phase shift divided by phase of one cycle
 quotient_map(~isfinite(quotient_map)) = 0;               %remove infinities
-integer_map = mod(quotient_map, 1) < 0.1                 %find values that are approximately divide the phase by even cycles
+integer_map = mod(quotient_map, 1) < precision           %find values that are approximately divide the phase by even cycles
 allowable_phases = integer_map .* phaseshift;
 
 max_phase = max(max(allowable_phases))
