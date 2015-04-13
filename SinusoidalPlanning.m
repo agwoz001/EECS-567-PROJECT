@@ -1,7 +1,7 @@
 close all;
 clear all;
 
-deltat = 0.1;
+deltat = 0.05;
 phaseangle = pi/2;
 q1_cycle = -pi/2;
 q1_init = 0;
@@ -11,17 +11,26 @@ q0_end = 75*pi/180;
 precision = 1.5;        %how close to an integer number of periods is acceptable (unitless)
 
 
-k_test = linspace(0,pi/3,50);
+k_test = linspace(.00001,2*pi,50);%linspace(0,pi/3,50);
 w_test = 1:10;
-phaseshift = zeros(size(k_test),10);
+phaseshift = zeros(length(k_test),10);
 
 figure(1)
 hold on
 for i = 1:length(k_test)
     for w = 1:length(w_test)    
-        phaseshift(i,w) = SinusoidCyclePhaseChange(k_test(i),q0_init,w,phaseangle);        
+        if (k_test(i)/w_test(w)>pi/2)
+            phaseshift(i,w) = 0;
+        else
+            phaseshift(i,w) = SinusoidCyclePhaseChange(k_test(i),q0_init,w_test(w),phaseangle); 
+        end
     end
 end
+
+% for i = 1:length(k_test)
+%     w_test(i)=k_test(i)/(pi/2);
+%     phaseshift(i)=SinusoidCyclePhaseChange(k_test(i),q0_init,w_test(i),phaseangle);
+% end
 
 %find where phase shift is approximately an integer
 quotient_map = (q0_end-q0_init)./phaseshift;             %find desired phase shift divided by phase of one cycle
@@ -39,7 +48,7 @@ num_cycles = (q0_end-q0_init)/max_phase
 %xlabel('k'); ylabel('phase shift (deg)');
 %plot3(k_test, w_test, phaseshift(:,:))
 
-q2_cycle = pi/2 - k; 
+q2_cycle = pi/2 - k/omega; 
 T = 2*pi/omega;                             %time of 1 oscillation
 
 t = 0:deltat:1.2*num_cycles*T-deltat;       %time of fall
