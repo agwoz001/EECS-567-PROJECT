@@ -2,9 +2,17 @@ clear;
 %Enter these variables according to desired falling trajectory
 t=0:.05:40;
 q0init=pi()/2;
-q2=-sin(t)+pi/2;
-q1=cos(t)+pi/2-1;
-q3=sin(t+pi/8);
+
+
+ k = .7;
+omega = 1;                      %determines frequency of sinusoidal driving
+phaseangle=pi/6;
+
+q1=-k/omega*sin(omega*t)+pi/2-k/omega;
+q2=-k/omega*sin(omega*t+phaseangle)-pi/3;
+q3=-k/omega*sin(omega*t+phaseangle*2)-k/omega+pi/2;
+
+
 %%%%%%%%%%%%% Use q0 script to calc appropriate q0 angles
 q0=q0_4(t,q0init,q1,q2,q3);
 
@@ -14,5 +22,7 @@ q2_signal = [t; q2]';
 q3_signal = [t; q3]';
 q0_signal = [t; q0]';
 
-%plot(q0_signal(:,1),q0_signal(:,2))
+plot(q0_signal(:,1),q0_signal(:,2),t,q1,t,q2,t,q3)
+legend('q0','q1','q2','q3')
+
 save qvecs4 q1_signal q2_signal q3_signal q0_signal
