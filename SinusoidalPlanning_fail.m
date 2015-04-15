@@ -1,30 +1,35 @@
 close all;
 clear all;
 
-deltat = 0.01;
+deltat = 0.05;
 phaseangle = pi/2;
 q1_cycle = -pi/2;
 q1_init = 0;
 q2_init = 0;
-q0_init = 45*pi/180;
+q0_init = 20*pi/180;%45*pi/180;
 q0_end = 75*pi/180;
-precision = 0.1;        %how close to an integer number of periods is acceptable (unitless)
+precision = .07;        %how close to an integer number of periods is acceptable (unitless)
 
 
-k_test = linspace(.00001,2.5,250);%linspace(0,pi/3,50);
-w_test = linspace(1,5,25);
+k_test = linspace(.5,10,400);%linspace(0,pi/3,50);
+w_test = 1;%linspace(1,3,50);
 phaseshift = zeros(length(k_test),10);
 
 figure(1)
 hold on
 for i = 1:length(k_test)
-    for w = 1:length(w_test)    
-        if ((k_test(i)/w_test(w))>(pi/4))
+    for w = 1:length(w_test)  
+        temp(i,w)=k_test(i)/w_test(w);
+        if (temp(i,w)>(pi/4))
             phaseshift(i,w) = 0;
+            NumCyclesGrid(i,w) = 0;
+            metric(i,w)=100.5;
         else
             phaseshift(i,w) = SinusoidCyclePhaseChange(k_test(i),q0_init,w_test(w),phaseangle); 
+            NumCyclesGrid(i,w) = (q0_end-q0_init)/phaseshift(i,w);
+            metric(i,w)=abs(q0_end-q0_init-round(NumCyclesGrid(i,w))*phaseshift(i,w));
         end
-        temp(i,w)=k_test(i)/w_test(w);
+
     end
 end
 
@@ -36,17 +41,26 @@ end
 %find where phase shift is approximately an integer
 quotient_map = (q0_end-q0_init)./phaseshift;             %find desired phase shift divided by phase of one cycle
 quotient_map(~isfinite(quotient_map)) = 0;               %remove infinities
-integer_map = or(mod(quotient_map, 1) < precision, mod(quotient_map,1) > 1-precision);           %find values that are approximately divide the phase by even cycles
+integer_map = mod(quotient_map, 1) < precision  ;         %find values that are approximately divide the phase by even cycles
 allowable_phases = integer_map .* phaseshift;
+%NumCyclesGrid=(q0_end-q0_init)./allowable_phases;
 
-max_phase = max(max(allowable_phases))
-[maxloc_row, maxloc_col] = find(allowable_phases == max(max(allowable_phases)))
+%new stuff
+ %NumCyclesGrid=(q0_end-q0_init)./phaseshift;                    
+%metric=abs(q0_end-q0_init-round(NumCyclesGrid).*phaseshift);
+%max_phase = min(min(metric));
+[maxloc_row, maxloc_col] = find(metric == min(min(metric)));
+max_phase=phaseshift(maxloc_row, maxloc_col);
+%max_phase = min(min(q0_end-q0_init-allowable_phases.*NumCyclesGrid));
+%max_phase = max(max(allowable_phases))
+%[maxloc_row, maxloc_col] = find(allowable_phases == max(max(allowable_phases)))
 k = k_test(maxloc_row);
-omega = w_test(maxloc_col)
-num_cycles = (q0_end-q0_init)/max_phase
+omega = w_test(maxloc_col);
+num_cycles = (q0_end-q0_init)./max_phase;
+%clear phaseshift metric
 
-k = 10*k;
-omega = 10*omega;
+%STUFF
+k = 10*k; omega = 10*omega; num_cycles = round(num_cycles);
 
 %plot(k_test,phaseshift*180/pi)
 %xlabel('k'); ylabel('phase shift (deg)');
@@ -111,3 +125,6 @@ q0_signal = [t; q0_final]';
 save qvecs q1_signal  q2_signal  q0_signal
 
 %final error = 0.6178%
+figure;
+H = angmom(t,q0_final,q1_final,q2_final);
+plot(t(1:end-1),H)
