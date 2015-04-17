@@ -2,11 +2,13 @@ clear;
 close all;
 q0_init = 45*pi/180;
 
+%k=0.7;
+omega=.8;
+%phaseangle=pi/3;
 
-
-%k=linspace(0,pi/4,15);
+k=linspace(0,pi/4,15);
 %omega = linspace(.1,1,4);
-%phaseangle=linspace(0,pi,15);
+phaseangle=linspace(0,pi,15);
 for j=1:length(omega)
     for i=1:length(k)
         for l=1:length(phaseangle)
@@ -21,7 +23,7 @@ for j=1:length(omega)
     ylabel('phase angle')
     zlabel('Phase change (deg)')
     title(strcat('Phase angle vs. k - omega=',num2str(omega(j))))
-    clear Paramsk
+    %clear Paramsk
 end
 
 

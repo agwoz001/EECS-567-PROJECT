@@ -11,9 +11,9 @@ t = 0:deltat:2*pi/omega;
 %entering sinusoidal cycle
 % u1 = k*sin(t);                  %driving signal to inputs
 % u2 = -k*cos(t);   
-q1_2 = -k/omega*sin(omega*t+phaseangle)+q1_cycle+k;
-q2_2 = -k/omega*sin(omega*t)+q2_cycle;
-q3_2 = -k/omega*sin(omega*t+2*phaseangle)-k;
+q1_2 = -k/omega*sin(omega*t)-pi/2+k/omega;
+q2_2 = k/omega*sin(omega*t+phaseangle)+pi/2-k/omega;
+q3_2 = k/omega*sin(omega*t+phaseangle*2)+pi/2-k/omega;
 q0_2 = q0_4(t,q0_init,q1_2,q2_2,q3_2);
 
 phaseshift=q0_2(end)-q0_init;
