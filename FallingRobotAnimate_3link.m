@@ -185,6 +185,7 @@ elseif flag ==2;
 sqrt((joint2(1)-center2(1))^2+(joint2(2)-center2(2))^2)
 %%%%% draw robot. Graph is expressed in frame c for now. Eventually need to
 %%%%% add y offset to everything as robot falls.
+    line([-vlen vlen],-[h(2)+(L1+2*L2)*sin(75*pi/180) h(2)+(L1+2*L2)*sin(75*pi/180)],'Color','r')
     line([joint1(1) joint2(1)],[joint1(2) joint2(2)])
     line([joint1(1) end1(1)],[joint1(2) end1(2)])
     line([joint2(1) end2(1)],[joint2(2) end2(2)])
