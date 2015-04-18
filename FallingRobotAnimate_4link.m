@@ -112,7 +112,7 @@ if flag==0, % initialize the animation
  
     axis off;
     
-    sys = [0 0 0 6 0 0 1]; %6 inputs
+    sys = [0 0 0 7 0 0 1]; %7 inputs
     x0  = [];
     str = [];
     ts  = [tsdef, 0];
@@ -131,9 +131,13 @@ elseif flag ==2;
     
     q1=u(3);
     q2=u(4);
-    q0=u(5); %TODO: solve for q0
+    q0=u(5);
     q3=u(6);
     
+    %calculate falling distance
+    tend= u(7);
+    maxh=0.5*9.81*tend^2;
+    h=[0 (maxh-0.5*9.81*t^2) 0]';
     
     % Rotation Matrices
     Rc0=[cos(q0),-sin(q0),0;sin(q0),cos(q0),0;0,0,1];
@@ -180,9 +184,8 @@ elseif flag ==2;
     center3=joint3+Rc0*R03*[L3; 0 ;0];
     end3=joint3+Rc0*R03*[2*L3; 0 ;0];
     
-%sqrt((joint2(1)-center2(1))^2+(joint2(2)-center2(2))^2)
-%%%%% draw robot. Graph is expressed in frame c for now. Eventually need to
-%%%%% add y offset to everything as robot falls.
+%%%%% draw robot. Graph is expressed in frame c
+    line([-vlen vlen],-[h(2)+(2*L1+2*L2)*sin(75*pi/180) h(2)+(2*L1+2*L2)*sin(75*pi/180)],'Color','r','LineWidth',2)
     line([joint1(1) joint2(1)],[joint1(2) joint2(2)])
     line([joint1(1) end1(1)],[joint1(2) end1(2)])
     line([joint2(1) end2(1)],[joint2(2) end2(2)])
