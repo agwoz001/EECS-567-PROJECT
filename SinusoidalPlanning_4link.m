@@ -49,8 +49,8 @@ k = k_test(maxloc_row);
 omega = w_test(maxloc_col)
 num_cycles = (q0_end-q0_init)/max_phase
 
-k = 2*k;
-omega = 2*omega;
+k = 4*k;
+omega = 4*omega;
 
 %plot(k_test,phaseshift*180/pi)
 %xlabel('k'); ylabel('phase shift (deg)');
@@ -119,6 +119,6 @@ q1_signal = [t; q1_final]';
 q2_signal = [t; q2_final]';
 q3_signal = [t; q3_final]';
 q0_signal = [t; q0_final]';
-save qvecs q1_signal  q2_signal  q0_signal q3_signal
+save qvecs4 q1_signal  q2_signal  q0_signal q3_signal
 
 %final error = 0.6178%
