@@ -54,6 +54,11 @@ function H = angmom(t,q0traj,q1traj,q2traj)
         %really long formula for angular momentum
         H(i)=(z.' * X(r2c) * (-((u0*(X(z) * rb0)+(u2+u0)*(X(z) * r2b))*M2+(u0*(X(z) * ra0)+(u1+u0)*(X(z) * r1a))*M1)/(M2+M1+M0)+u0*(X(z) * rb0)+(u2+u0)*(X(z) * r2b)))*M2+(z.' * X(r1c) * (-((u0*(X(z) * rb0)+(u2+u0)*(X(z) * r2b))*M2+(u0*(X(z) * ra0)+(u1+u0)*(X(z) * r1a))*M1)/(M2+M1+M0)+u0*(X(z) * ra0)+(u1+u0)*(X(z) * r1a)))*M1-(z.' * X(r0c) * ((u0*(X(z) * rb0)+(u2+u0)*(X(z) * r2b))*M2+(u0*(X(z) * ra0)+(u1+u0)*(X(z) * r1a))*M1)/(M2+M1+M0))*M0+u0*(I2+I1+I0)+u2*I2+u1*I1;
     end
+    
+    plot(t(1:end-1),H)
+    xlabel('Time [s]')
+    ylabel('Angular Momenum [g-cm^2/s]')
+    title('Angular Momentum about the Center of Mass')
 
 end
 
